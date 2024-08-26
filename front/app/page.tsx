@@ -1,27 +1,24 @@
-/* eslint-disable @typescript-eslint/no-use-before-define */
 /* eslint-disable no-console */
 
 "use client";
 
+import Image from 'next/image'
+
 import { CHAIN_NAMESPACES, IProvider, WEB3AUTH_NETWORK } from "@web3auth/base";
 import { EthereumPrivateKeyProvider } from "@web3auth/ethereum-provider";
-// IMP START - Quick Start
+
 import { Web3Auth } from "@web3auth/modal";
 import { useEffect, useState } from "react";
-// IMP END - Quick Start
 
-// IMP START - Blockchain Calls
 import RPC from "./ethersRPC";
 // import RPC from "./viemRPC";
 // import RPC from "./web3RPC";
-// IMP END - Blockchain Calls
 
-// IMP START - Dashboard Registration
+
 // Defined from:  https://dashboard.web3auth.io
 const clientId = process.env.NEXT_PUBLIC_CLIENT_ID || "";
-// IMP END - Dashboard Registration
 
-// IMP START - Chain Config
+
 const chainConfig = {
   chainNamespace: CHAIN_NAMESPACES.EIP155,
   chainId: "0xaa36a7",
@@ -34,7 +31,6 @@ const chainConfig = {
   tickerName: "Ethereum",
   logo: "https://cryptologos.cc/logos/ethereum-eth-logo.png",
 };
-// IMP END - Chain Config
 
 // IMP START - SDK Initialization
 const privateKeyProvider = new EthereumPrivateKeyProvider({
@@ -211,7 +207,7 @@ function App() {
           Source code
         </a>
         <a href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FWeb3Auth%2Fweb3auth-pnp-examples%2Ftree%2Fmain%2Fweb-modal-sdk%2Fquick-starts%2Fnextjs-modal-quick-start&project-name=w3a-nextjs-modal&repository-name=w3a-nextjs-modal">
-          <img src="https://vercel.com/button" alt="Deploy with Vercel" />
+          <Image src="https://vercel.com/button" alt="Deploy with Vercel" />
         </a>
       </footer>
     </div>
