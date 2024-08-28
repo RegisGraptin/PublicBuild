@@ -14,15 +14,17 @@ interface CommitModel {
 }
 
 type Repositories = Record<string, RepoModel>;
-// type RepoCommits = Record<string, CommitModel>;
+type RepoCommits = Record<string, CommitModel[]>;
 
 const GithubPage = () => {
 
     // const [accessToken, setAccessToken] = useState("")
     const [githubUsername, setGithubUsername] = useState("")
+    const [selectedProject, setSelectedProject] = useState("")
 
     // Store the repository data
     const [repositories, setRepositories] = useState<Repositories>({});
+    const [commits, setCommits] = useState<RepoCommits>({});
 
     async function getGithubUserData() {
         let events = await fetch(`https://api.github.com/users/${githubUsername}/events`)
@@ -32,13 +34,28 @@ const GithubPage = () => {
         console.log(events)
 
         events.map(item => {
+            // Retrieve repository information
             let repo: RepoModel = { name: item.repo.name, url: item.repo.url };
             setRepositories(prev => ({
                 ...prev,
                 [item.repo.id]: repo,
             }));
-        })
 
+            // Retrieve commits data
+            if (item.payload.commits) {
+                item.payload.commits.map(commit => {
+                    let commitModel: CommitModel = {
+                        sha: commit.sha,
+                        message: commit.message,
+                        createdAt: item.created_at,
+                    };
+                    setCommits(prev => ({
+                        ...prev,
+                        [item.repo.id]: prev[item.repo.id] ? [...prev[item.repo.id], commitModel] : [commitModel],
+                    }));
+                })
+            }
+        })
     }
 
 
@@ -83,23 +100,58 @@ const GithubPage = () => {
                         </div>
                     </div>
 
-                    <ul>
-                        <li>test</li>
-                    </ul>
                 </article>
 
 
-                <article>
-                    <h2>Repositories</h2>
+                <section className="flex">
+                    <article className="container w-1/3">
+                        <h2>Repositories</h2>
 
-                    <div>
-                        {Object.entries(repositories).map(([key, obj]) => (
-                            <li key={key}>
-                                {obj.name}
-                            </li>
-                        ))}
-                    </div>
-                </article>
+                        <div className="grid grid-cols-2 gap-2">
+
+                            {Object.entries(repositories).map(([key, obj]) => (
+
+                                <div
+                                    key={key}
+                                    className="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100"
+                                    onClick={() => {
+                                        setSelectedProject(key);
+                                    }}
+                                >
+
+                                    <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">
+                                        {obj.name}
+                                    </h5>
+                                    <p className="font-normal text-gray-700">
+                                        ....
+                                    </p>
+
+                                </div>
+                            ))}
+                        </div>
+
+                    </article>
+
+                    <article className="container w-2/3">
+                        {selectedProject && (
+                            <>
+
+                                <h2>History - {repositories[selectedProject].name}</h2>
+
+                                {commits[selectedProject] && commits[selectedProject].sort((a, b) => a.createdAt < b.createdAt ? 1 : -1).map(commit => {
+                                    return <>
+                                        <div>
+                                            {commit.message}
+                                        </div>
+                                    </>
+                                })}
+
+                            </>
+                        )}
+                    </article>
+
+
+                </section>
 
             </section>
 
