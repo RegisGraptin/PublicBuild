@@ -11,8 +11,13 @@ import { Web3Auth } from "@web3auth/modal";
 import { useEffect, useState } from "react";
 
 import RPC from "./ethersRPC";
+import GithubPage from './github/page';
+import Link from 'next/link';
 // import RPC from "./viemRPC";
 // import RPC from "./web3RPC";
+
+const { SignProtocolClient, SpMode, EvmChains } = require("@ethsign/sp-sdk");
+const { privateKeyToAccount } = require("viem/accounts");
 
 
 // Defined from:  https://dashboard.web3auth.io
@@ -184,21 +189,63 @@ function App() {
     </button>
   );
 
+  const client = new SignProtocolClient(SpMode.OnChain, {
+    chain: EvmChains.baseSepolia,
+    account: provider, // Optional, depending on environment
+  });
+
   return (
-    <div className="container">
-      <h1 className="title">
-        <a target="_blank" href="https://web3auth.io/docs/sdk/pnp/web/modal" rel="noreferrer">
-          Web3Auth{" "}
-        </a>
-        & NextJS Quick Start
-      </h1>
+    <>
+      <header>
+        <nav className="border-gray-200 px-4 lg:px-6 py-2.5">
+          <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
+            <a href="/" className="flex items-center">
+              <img src="../images/logo.svg" className="mr-3 h-6 sm:h-16" alt="Logo" />
+              <span className="self-center text-xl font-semibold whitespace-nowrap">
+                Build in Public
+              </span>
+            </a>
+            <div className="flex items-center lg:order-2">
+              
+            {!loggedIn && (
+              <button onClick={login} className="card">
+                Login
+              </button>
+            )}
 
-      <div className="grid">{loggedIn ? loggedInView : unloggedInView}</div>
-      <div id="console" style={{ whiteSpace: "pre-line" }}>
-        <p style={{ whiteSpace: "pre-line" }}></p>
+            {loggedIn && (
+              <button onClick={logout} className="card">
+                Log Out
+              </button>
+            )}
+
+            
+            </div>
+            
+            <div className="hidden justify-between items-center w-full lg:flex lg:w-auto lg:order-1" id="mobile-menu-2">
+              <ul className="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0">
+                <li>
+                  <Link href="/" className="block py-2 pr-4 pl-3 rounded bg-primary-700 lg:bg-transparent lg:text-primary-700 lg:p-0" >
+                    Home
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+      </header>
+
+      <div className="container mx-auto">
+        <h1 className="title">
+          Build in public - Github Aggregator to Twitter
+        </h1>
+
+        <div>
+          <GithubPage />
+        </div>
+
       </div>
-
-    </div>
+    </>
   );
 }
 

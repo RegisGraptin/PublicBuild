@@ -58,15 +58,16 @@ const GithubPage = () => {
         })
     }
 
+    async function callGaladriel(commits) {
+        console.log(commits)
+    }
+
 
     return (
         <>
             <section className="container mx-auto">
 
                 <article className="columns">
-
-
-                    <h3>Projects list</h3>
 
                     <div>
                         {/* <label htmlFor="helper-text" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Github token</label>
@@ -119,8 +120,8 @@ const GithubPage = () => {
                                     }}
                                 >
 
-                                    <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">
-                                        {obj.name}
+                                    <h5 className="mb-2 text-xl font-bold tracking-tight text-gray-900">
+                                        {obj.name.split("/")[1]}
                                     </h5>
                                     <p className="font-normal text-gray-700">
                                         ....
@@ -140,11 +141,21 @@ const GithubPage = () => {
 
                                 {commits[selectedProject] && commits[selectedProject].sort((a, b) => a.createdAt < b.createdAt ? 1 : -1).map(commit => {
                                     return <>
-                                        <div>
+                                        <div key={commit.message}>
                                             {commit.message}
                                         </div>
                                     </>
                                 })}
+
+
+                                <h3>Actions</h3>
+
+                                <button 
+                                    type="button" 
+                                    onClick={() => callGaladriel(commits[selectedProject])}
+                                    className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">
+                                        Generate Summary
+                                </button>
 
                             </>
                         )}
